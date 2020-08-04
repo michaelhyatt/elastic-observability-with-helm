@@ -20,5 +20,4 @@ This page describes how to observe applications and Kubernetes clusters using El
 
 ## Diagrams
 ### Monitoring Kubernetes and applications using Filebeat and Metricbeat DaemonSet
-
-![test](K8s logstash o11y with Logstash - monitoring.png)
+!(test)[./images/monitoring1.png]
