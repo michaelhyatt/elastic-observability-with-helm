@@ -18,4 +18,7 @@ This page describes how to observe applications and Kubernetes clusters using El
 * APM server - used for application performance monitoring of applications deployed on Kubernetes.
 * Logstash - deployed as StatefulSet deployment and acting as a forward proxy for components communicating with Elastic application monitoring cluster. The purpose of Logstash here is to also serve as a persistent queue to prevent data loss in case of Elastic cluster outages.
 
-## Diagram
+## Diagrams
+### Monitoring Kubernetes and applications using Filebeat and Metricbeat DaemonSet
+
+![test](K8s logstash o11y with Logstash - monitoring.png)
