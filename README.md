@@ -23,3 +23,5 @@ This page describes how to observe applications and Kubernetes clusters using El
 ![Monitoring diagram](images/monitoring1.png)
 ### Data flow into Observability cluster
 ![Data flow](images/monitoring2.png)
+### Monitoring the monitors
+![Monitoring the monitors](images/monitoring3.png)
