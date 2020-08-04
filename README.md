@@ -20,4 +20,4 @@ This page describes how to observe applications and Kubernetes clusters using El
 
 ## Diagrams
 ### Monitoring Kubernetes and applications using Filebeat and Metricbeat DaemonSet
-!(test)[./images/monitoring1.png]
+![Monitoring diagram](images/monitoring1.png)
