@@ -1,6 +1,7 @@
 #!/bin/sh -vx
 
 alias k="kubectl -n elastic-monitoring"
+alias h="helm -n elastic-monitoring"
 alias kgp="k get pods"
 alias kgps="kubectl get pods --namespace=kube-system"
 alias kd="k delete -f"

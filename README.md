@@ -40,21 +40,19 @@ helm repo add elastic https://helm.elastic.co
 ### At start only: Run beats setup
 ```
 kubectl create -f filebeat/filebeat-setup.yml --namespace elastic-monitoring
-```
+kubectl create -f metricbeat/metricbeat-setup.yml --namespace elastic-monitoring
 
-### At start only: deploy kube-state-metrics
-Used by Metricbeat to collect Kubernetes cluster metrics
-```
-kubectl create -f kube-state-metrics --namespace kube-system
 ```
 
 ### Deploy Logstash proxies
 ```
-helm install proxy elastic/logstash --namespace elastic-monitoring -f logstash-proxy/values.yaml
+helm install proxy elastic/logstash --namespace elastic-monitoring -f logstash-proxy/logstash-helm-values.yaml
 ```
 
 ### Install Filebeat and Metricbeat DaemonSets
 Wait for the setup jobs to complete and Logstash proxies to start
 ```
-helm install ds elastic/filebeat -f filebeat/filebeat.yaml --namespace elastic-monitoring
+helm install ds elastic/filebeat -f filebeat/filebeat-helm-values.yaml --namespace elastic-monitoring
+helm install mb elastic/metricbeat -f metricbeat/metricbeat-helm-values.yaml --namespace elastic-monitoring
+
 ```
