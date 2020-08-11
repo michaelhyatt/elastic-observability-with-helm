@@ -84,7 +84,7 @@ daemonset:
         period: 10s
         enabled: true
 
-        logging.level: warning
+      logging.level: warning
 
 deployment:
   metricbeatConfig:
@@ -119,4 +119,4 @@ deployment:
           period: 10s
           hosts: ["${KUBE_STATE_METRICS_HOSTS}"]
 
-          logging.level: warning
+        logging.level: warning
