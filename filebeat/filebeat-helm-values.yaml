@@ -18,8 +18,8 @@ filebeatConfig:
     output.logstash:
       hosts: [ "proxy-logstash.elastic-monitoring.svc.cluster.local:5044" ]
 
-    logging.metrics.enabled: false
-
+      logging.level: warning
+      
 extraEnvs:
   - name: NODE_NAME
     valueFrom:
