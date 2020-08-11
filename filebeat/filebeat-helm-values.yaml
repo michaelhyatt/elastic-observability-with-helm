@@ -1,5 +1,5 @@
 filebeatConfig:
-  hostNetworking: true
+  hostNetworking: "true"
   filebeat.yml: |
     setup.template.settings:
       index.mapping.total_fields.limit: 10000
