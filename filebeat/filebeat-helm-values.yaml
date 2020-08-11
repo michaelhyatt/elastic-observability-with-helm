@@ -1,5 +1,3 @@
-hostNetworking: true
-
 filebeatConfig:
   filebeat.yml: |
     setup.template.settings:
