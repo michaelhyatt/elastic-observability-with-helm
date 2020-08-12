@@ -46,16 +46,6 @@ extraEnvs:
       secretKeyRef:
         name: cloud-secret
         key: cloud-auth
-  - name: LOGGING_ELASTIC_CLOUD_ID
-    valueFrom:
-      secretKeyRef:
-        name: logging-cloud-secret
-        key: cloud-id
-  - name: LOGGING_ELASTIC_CLOUD_AUTH
-    valueFrom:
-      secretKeyRef:
-        name: logging-cloud-secret
-        key: cloud-auth
 
 # Logstash config files
 logstashConfig:
@@ -63,11 +53,10 @@ logstashConfig:
     # Listener on all interfaces
     http.host: 0.0.0.0
 
-    # Turn on collector push monitoring
-    xpack.monitoring.enabled: true
-    xpack.monitoring.elasticsearch.cloud_id: "${LOGGING_ELASTIC_CLOUD_ID}"
-    xpack.monitoring.elasticsearch.cloud_auth: "${LOGGING_ELASTIC_CLOUD_AUTH}"
-
+    # Turn off collector push monitoring
+    xpack.monitoring.enabled: false
+    monitoring.enabled: false
+    monitoring.cluster_uuid: loq7p-fYRLK4eEd6UNbPtg
 
     # Persistent queue settings
 
