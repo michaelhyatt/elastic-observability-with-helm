@@ -14,6 +14,11 @@ extraEnvs:
       secretKeyRef:
         name: logging-cloud-secret
         key: cluster-uuid
+  - name: NODE_NAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+
 
 filebeatConfig:
   filebeat.yml: |
@@ -42,9 +47,3 @@ filebeatConfig:
       cluster_uuid: "${LOGGING_ELASTIC_CLOUD_UUID}"
       cloud.id: "${LOGGING_ELASTIC_CLOUD_ID}"
       cloud.auth: "${LOGGING_ELASTIC_CLOUD_AUTH}"
-
-extraEnvs:
-  - name: NODE_NAME
-    valueFrom:
-      fieldRef:
-        fieldPath: spec.nodeName
