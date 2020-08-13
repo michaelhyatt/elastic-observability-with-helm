@@ -1,5 +1,5 @@
 daemonset:
-  # hostNetworking: true
+  hostNetwork: true
   extraEnvs:
     - name: LOGGING_ELASTIC_CLOUD_ID
       valueFrom:
@@ -77,13 +77,14 @@ daemonset:
         hosts: ["https://${NODE_NAME}:10250"]
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
         ssl.verification_mode: "none"
-        processors:
-          - add_kubernetes_metadata: ~
+        add_metadata: true
 
       - module: kubernetes
         enabled: true
         metricsets:
-          - event
+          - proxy
+        hosts: ["localhost:10249"]
+        period: 10s
 
       - module: docker
         metricsets:
@@ -107,6 +108,35 @@ daemonset:
         cluster_uuid: "${LOGGING_ELASTIC_CLOUD_UUID}"
         cloud.id: "${LOGGING_ELASTIC_CLOUD_ID}"
         cloud.auth: "${LOGGING_ELASTIC_CLOUD_AUTH}"
+
+clusterRoleRules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - namespaces
+  - events
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["extensions"]
+  resources:
+  - replicasets
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources:
+  - statefulsets
+  - deployments
+  - replicasets
+  verbs: ["get", "list", "watch"]
+- apiGroups:
+  - ""
+  resources:
+  - nodes/stats
+  verbs:
+  - get
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
 
 deployment:
   extraEnvs:
@@ -133,10 +163,6 @@ deployment:
         processors:
           - add_cloud_metadata:
 
-          # host.name interferes with Metrics UI
-          # - drop_fields:
-          #     fields: [ "host.name" ]
-
         output.logstash:
           hosts: ["proxy-logstash.elastic-monitoring.svc.cluster.local:5044"]
 
@@ -149,13 +175,33 @@ deployment:
         - module: kubernetes
           enabled: true
           metricsets:
-            - state_node
-            - state_deployment
-            - state_replicaset
-            - state_pod
-            - state_container
-          period: 10s
+          - state_node
+          - state_deployment
+          - state_replicaset
+          - state_statefulset
+          - state_pod
+          - state_container
+          - state_cronjob
+          - state_resourcequota
+          - state_service
+          - state_persistentvolume
+          - state_persistentvolumeclaim
+          - state_storageclass
+          - event
+          period: 30s
           hosts: ["${KUBE_STATE_METRICS_HOSTS}"]
+          add_metadata: true
+
+        - module: kubernetes
+          enabled: true
+          metricsets:
+            - apiserver
+          hosts: ["https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}"]
+          ssl.verification_mode: "none"
+          bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+          ssl.certificate_authorities:
+            - /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          period: 10s
 
         logging.level: warning
 
