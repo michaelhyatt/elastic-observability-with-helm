@@ -1,5 +1,5 @@
 daemonset:
-  hostNetworking: true
+  # hostNetworking: true
   extraEnvs:
     - name: LOGGING_ELASTIC_CLOUD_ID
       valueFrom:
@@ -15,7 +15,7 @@ daemonset:
       valueFrom:
         secretKeyRef:
           name: logging-cloud-secret
-          key: cluster-uuid          
+          key: cluster-uuid
   metricbeatConfig:
     metricbeat.yml: |
       setup.template.settings:
