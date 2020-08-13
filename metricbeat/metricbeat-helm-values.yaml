@@ -1,5 +1,21 @@
 daemonset:
   hostNetworking: true
+  extraEnvs:
+    - name: LOGGING_ELASTIC_CLOUD_ID
+      valueFrom:
+        secretKeyRef:
+          name: logging-cloud-secret
+          key: cloud-id
+    - name: LOGGING_ELASTIC_CLOUD_AUTH
+      valueFrom:
+        secretKeyRef:
+          name: logging-cloud-secret
+          key: cloud-auth
+    - name: LOGGING_ELASTIC_CLOUD_UUID
+      valueFrom:
+        secretKeyRef:
+          name: logging-cloud-secret
+          key: cluster-uuid          
   metricbeatConfig:
     metricbeat.yml: |
       setup.template.settings:
@@ -86,7 +102,29 @@ daemonset:
 
       logging.level: warning
 
+      monitoring:
+        enabled: true
+        cluster_uuid: "${LOGGING_ELASTIC_CLOUD_UUID}"
+        cloud.id: "${LOGGING_ELASTIC_CLOUD_ID}"
+        cloud.auth: "${LOGGING_ELASTIC_CLOUD_AUTH}"
+
 deployment:
+  extraEnvs:
+    - name: LOGGING_ELASTIC_CLOUD_ID
+      valueFrom:
+        secretKeyRef:
+          name: logging-cloud-secret
+          key: cloud-id
+    - name: LOGGING_ELASTIC_CLOUD_AUTH
+      valueFrom:
+        secretKeyRef:
+          name: logging-cloud-secret
+          key: cloud-auth
+    - name: LOGGING_ELASTIC_CLOUD_UUID
+      valueFrom:
+        secretKeyRef:
+          name: logging-cloud-secret
+          key: cluster-uuid
   metricbeatConfig:
       metricbeat.yml: |
         setup.template.settings:
@@ -120,3 +158,9 @@ deployment:
           hosts: ["${KUBE_STATE_METRICS_HOSTS}"]
 
         logging.level: warning
+
+        monitoring:
+          enabled: true
+          cluster_uuid: "${LOGGING_ELASTIC_CLOUD_UUID}"
+          cloud.id: "${LOGGING_ELASTIC_CLOUD_ID}"
+          cloud.auth: "${LOGGING_ELASTIC_CLOUD_AUTH}"

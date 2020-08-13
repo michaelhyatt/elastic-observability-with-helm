@@ -1,6 +1,31 @@
+extraEnvs:
+  - name: LOGGING_ELASTIC_CLOUD_ID
+    valueFrom:
+      secretKeyRef:
+        name: logging-cloud-secret
+        key: cloud-id
+  - name: LOGGING_ELASTIC_CLOUD_AUTH
+    valueFrom:
+      secretKeyRef:
+        name: logging-cloud-secret
+        key: cloud-auth
+  - name: LOGGING_ELASTIC_CLOUD_UUID
+    valueFrom:
+      secretKeyRef:
+        name: logging-cloud-secret
+        key: cluster-uuid
+
 # APM server config
 apmConfig:
     apm-server.yml: |
+      logging.level: warning
+
+      monitoring:
+        enabled: true
+        cluster_uuid: "${LOGGING_ELASTIC_CLOUD_UUID}"
+        cloud.id: "${LOGGING_ELASTIC_CLOUD_ID}"
+        cloud.auth: "${LOGGING_ELASTIC_CLOUD_AUTH}"
+
       apm-server.rum.enabled: true
       apm-server.rum.event_rate.limit: 300
       apm-server.rum.event_rate.lru_size: 1000
