@@ -134,8 +134,8 @@ deployment:
           - add_cloud_metadata:
 
           # host.name interferes with Metrics UI
-          - drop_fields:
-              fields: [ "host.name" ]
+          # - drop_fields:
+          #     fields: [ "host.name" ]
 
         output.logstash:
           hosts: ["proxy-logstash.elastic-monitoring.svc.cluster.local:5044"]
