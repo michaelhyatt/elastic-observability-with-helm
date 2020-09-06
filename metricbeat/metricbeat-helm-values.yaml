@@ -162,6 +162,12 @@ deployment:
 
         processors:
           - add_cloud_metadata:
+          - drop_fields:
+              when:
+                equals:
+                  kubernetes.service.cluster_ip: "None"
+              fields: [ "kubernetes.service.cluster_ip" ]
+              ignore_missing: true
 
         output.logstash:
           hosts: ["proxy-logstash.elastic-monitoring.svc.cluster.local:5044"]
