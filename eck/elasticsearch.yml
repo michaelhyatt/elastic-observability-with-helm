@@ -1,0 +1,49 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: observability
+  namespace: elastic-monitoring
+spec:
+  version: 7.9.1
+  nodeSets:
+  - name: default
+    count: 3
+    volumeClaimTemplates:
+    - metadata:
+        name: elasticsearch-data
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 60Gi
+        storageClassName: standard
+    config:
+      node.master: true
+      node.data: true
+      node.ingest: true
+      node.ml: true
+      node.store.allow_mmap: false
+      xpack.monitoring.collection.enabled: true
+      xpack.monitoring.elasticsearch.collection.enabled: false
+      # Enabling trial license
+      xpack.license.self_generated.type: trial
+    podTemplate:
+      metadata:
+        labels:
+          app: elasticsearch
+          scrape: es
+      spec:
+        containers:
+        - name: elasticsearch
+          resources:
+            limits:
+              memory: 2Gi
+              cpu: 1
+          env:
+          - name: ES_JAVA_OPTS
+            value: "-Xms1g -Xmx1g"
+  http:
+    service:
+      spec:
+        type: LoadBalancer

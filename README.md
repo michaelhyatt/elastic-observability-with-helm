@@ -27,6 +27,11 @@ This page describes how to observe applications and Kubernetes clusters using El
 ![Monitoring the monitors](images/monitoring3.png)
 
 ## Install
+### Deploy ECK operator
+```
+kubectl apply -f https://download.elastic.co/downloads/eck/1.2.1/all-in-one.yaml
+```
+
 ### At start only: Add Helm repo
 ```
 helm repo add elastic https://helm.elastic.co

@@ -1,0 +1,34 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: observability
+  namespace: elastic-monitoring
+spec:
+  version: 7.9.1
+  count: 1
+  podTemplate:
+    metadata:
+      labels:
+        app: kibana
+        scrape: kb
+      annotations:
+        co.elastic.logs/module: kibana
+        # co.elastic.metrics/module: kibana
+        # co.elastic.metrics/hosts: 'https://${data.host}:${data.port}'
+        # co.elastic.metrics/period: 10s
+    spec:
+      containers:
+      - name: kibana
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: 1
+  elasticsearchRef:
+    name: observability
+  config:
+    xpack.monitoring.kibana.collection.enabled: false
+    xpack.monitoring.collection.enabled: true
+  http:
+    service:
+      spec:
+        type: LoadBalancer
