@@ -58,20 +58,6 @@ extraVolumes: |
     secret:
       secretName: observability-es-http-certs-public
 
-# expose services
-service:
-  annotations: {}
-  type: ClusterIP
-  ports:
-   - name: beats
-     port: 5044
-     protocol: TCP
-     targetPort: 5044
-   - name: http
-     port: 9600
-     protocol: TCP
-     targetPort: 9600
-
 # Logstash config files
 logstashConfig:
   logstash.yml: |
