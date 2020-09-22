@@ -5,6 +5,10 @@ metadata:
   namespace: elastic-monitoring
 spec:
   version: 7.9.1
+  http:
+    service:
+      spec:
+        type: LoadBalancer  
   nodeSets:
   - name: default
     count: 3
@@ -43,7 +47,3 @@ spec:
           env:
           - name: ES_JAVA_OPTS
             value: "-Xms1g -Xmx1g"
-  http:
-    service:
-      spec:
-        type: LoadBalancer

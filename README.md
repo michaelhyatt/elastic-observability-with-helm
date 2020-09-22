@@ -42,6 +42,11 @@ helm repo add elastic https://helm.elastic.co
 ./scripts/create_secrets.sh
 ```
 
+### Deploy metricbeat and filebeat to monitor ES/Kibana/Logstash and collect logs from them.
+```
+helm upgrade monitor elastic/metricbeat -f metricbeat/metricbeat-monitoring-helm-values.yaml --namespace elastic-monitoring
+```
+
 ### At start only: Run beats setup
 ```
 kubectl create -f filebeat/filebeat-setup.yml --namespace elastic-monitoring

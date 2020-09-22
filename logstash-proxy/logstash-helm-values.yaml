@@ -30,32 +30,33 @@ service:
     port: 5044
     targetPort: 5044
 
-# Annotations for filebeat autodiscovery to apply logstash module to pod logs
-podAnnotations:
-  co.elastic.logs/module: logstash
+# Label for metrics scraping
+labels:
+  scrape: ls
 
 # Extra env variables from secrets to connect to ESS cluster
 extraEnvs:
-  - name: LOGGING_ELASTIC_CLOUD_ID
+  - name: ES_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        key: elastic
+        name: observability-es-elastic-user
+  - name: LOGGING_ELASTIC_CLOUD_UUID
     valueFrom:
       secretKeyRef:
         name: logging-cloud-secret
-        key: cloud-id
-  - name: LOGGING_ELASTIC_CLOUD_AUTH
-    valueFrom:
-      secretKeyRef:
-        name: logging-cloud-secret
-        key: cloud-auth
-  - name: ELASTIC_CLOUD_ID
-    valueFrom:
-      secretKeyRef:
-        name: cloud-secret
-        key: cloud-id
-  - name: ELASTIC_CLOUD_AUTH
-    valueFrom:
-      secretKeyRef:
-        name: cloud-secret
-        key: cloud-auth
+        key: cluster-uuid
+
+# Volumes and volume mounts with secrets
+extraVolumeMounts: |
+  - name: cert-ca
+    mountPath: "/etc/logstash/certificates"
+    readOnly: true
+
+extraVolumes: |
+  - name: cert-ca
+    secret:
+      secretName: observability-es-http-certs-public
 
 # Logstash config files
 logstashConfig:
@@ -64,10 +65,8 @@ logstashConfig:
     http.host: 0.0.0.0
 
     # Turn on collector push monitoring
-    xpack.monitoring.enabled: true
-    xpack.monitoring.elasticsearch.cloud_id: "${LOGGING_ELASTIC_CLOUD_ID}"
-    xpack.monitoring.elasticsearch.cloud_auth: "${LOGGING_ELASTIC_CLOUD_AUTH}"
-
+    monitoring.enabled: false
+    monitoring.cluster_uuid: "${LOGGING_ELASTIC_CLOUD_UUID}"
 
     # Persistent queue settings
 
@@ -112,8 +111,10 @@ logstashPipeline:
 
         # APM event indexing
         elasticsearch {
-          cloud_auth => "${ELASTIC_CLOUD_AUTH}"
-          cloud_id => "${ELASTIC_CLOUD_ID}"
+          hosts => [ "https://observability-es-http:9200" ]
+          cacert => "/etc/logstash/certificates/ca.crt"
+          user => "elastic"
+          password => "${ES_PASSWORD}"
           manage_template => "false"
           index => "%{[@metadata][beat]}-%{[@metadata][version]}-%{[processor][event]}"
         }
@@ -121,8 +122,10 @@ logstashPipeline:
 
           # Beats event indexing
           elasticsearch {
-            cloud_auth => "${ELASTIC_CLOUD_AUTH}"
-            cloud_id => "${ELASTIC_CLOUD_ID}"
+            hosts => [ "https://observability-es-http:9200" ]
+            cacert => "/etc/logstash/certificates/ca.crt"
+            user => "elastic"
+            password => "${ES_PASSWORD}"
             manage_template => "false"
             index => "%{[@metadata][beat]}-%{[@metadata][version]}"
         }
