@@ -83,12 +83,13 @@ deployment:
                       - node
                       - node_stats
                     period: 10s
-                    hosts: "https://${data.host}:${data.ports.https}"
-                    # WARNING: disables TLS as the default certificate is not valid for the pod FQDN
-                    # TODO: switch this to "certificate" when available: https://github.com/elastic/beats/issues/8164
-                    ssl.verification_mode: "none"
+                    hosts: "http://${data.host}:9600"
                     xpack.enabled: true
 
+      metricbeat.modules:
+        - system:
+          enabled: false
+          
       processors:
       - add_cloud_metadata: {}
 
