@@ -11,11 +11,6 @@ spec:
       labels:
         app: kibana
         scrape: kb
-      annotations:
-        co.elastic.logs/module: kibana
-        # co.elastic.metrics/module: kibana
-        # co.elastic.metrics/hosts: 'https://${data.host}:${data.port}'
-        # co.elastic.metrics/period: 10s
     spec:
       containers:
       - name: kibana
@@ -26,8 +21,12 @@ spec:
   elasticsearchRef:
     name: observability
   config:
-    xpack.monitoring.kibana.collection.enabled: false
-    xpack.monitoring.collection.enabled: true
+    logging:
+      json: false
+      quiet: true
+    xpack.monitoring:
+      kibana.collection.enabled: false
+      collection.enabled: true
   http:
     service:
       spec:

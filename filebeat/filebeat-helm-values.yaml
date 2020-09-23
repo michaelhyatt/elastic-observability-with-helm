@@ -36,6 +36,11 @@ filebeatConfig:
       - add_host_metadata:
       - add_docker_metadata:
       - add_kubernetes_metadata:
+      - drop_event:
+          when:
+            or:
+              - contains:
+                  message: "TLS verifications disabled"
 
     output.logstash:
       hosts: [ "proxy-logstash.elastic-monitoring.svc.cluster.local:5044" ]
